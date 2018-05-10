@@ -310,7 +310,7 @@
 
             var validCode=true;
 			$("#sendSmsCode").click(function () {
-			    var mobile = $("#phoneSubmit").val();
+                var mobile = $("#phoneSubmit").val();
 				var time=30;
 				var code=$(this);
 				if (validCode) {
@@ -318,6 +318,11 @@
 					code.addClass("fa-light");
 					var t=setInterval(function  () {
 						time--;
+						if(25 == time){
+                            $.get("/code/sms",{"mobile" : mobile},function (res) {
+                                $("#callBackCode").val(res.valiCode);
+                            });
+						}
 						code.html(time+"秒");
 						if (time==0) {
 							clearInterval(t);
@@ -329,9 +334,7 @@
 					},1000)
 				}
 
-                $.get("/code/sms",{"mobile" : mobile},function (res) {
-					$("#callBackCode").val(res.valiCode);
-                });
+
             });
 			
 			
