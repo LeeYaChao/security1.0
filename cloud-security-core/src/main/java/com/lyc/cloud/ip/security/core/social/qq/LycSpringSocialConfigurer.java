@@ -6,6 +6,7 @@ import org.springframework.social.security.SpringSocialConfigurer;
 public class LycSpringSocialConfigurer extends SpringSocialConfigurer{
 
     private String filterProcessesUrl;
+
     public LycSpringSocialConfigurer(String filterProcessesUrl) {
         this.filterProcessesUrl = filterProcessesUrl;
     }
