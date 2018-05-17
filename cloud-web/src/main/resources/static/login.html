@@ -108,7 +108,7 @@
 											<div class="space-6"></div>
 
 											<div class="social-login center">
-												<a class="btn btn-primary">
+												<a class="btn btn-primary" href="/qqLogin/callback.do">
 													<i class="ace-icon fa fa-qq"></i>
 												</a>
 
@@ -310,8 +310,8 @@
 
             var validCode=true;
 			$("#sendSmsCode").click(function () {
-                var mobile = $("#phoneSubmit").val();
-				var time=30;
+			    var mobile = $("#phoneSubmit").val();
+				var time=60;
 				var code=$(this);
 				if (validCode) {
 					validCode=false;

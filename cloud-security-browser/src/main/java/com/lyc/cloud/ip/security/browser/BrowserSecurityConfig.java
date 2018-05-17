@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
 
@@ -41,6 +42,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private AuthorizeConfigManager authorizeConfigManager;
 
+    @Autowired
+    private SpringSocialConfigurer lycSpringSocialConfigurer;
+
     @Bean
     public PersistentTokenRepository persistentTokenRepository(){
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
@@ -54,6 +58,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
        http.apply(validateCodeSecurityConfig)
                .and()
            .apply(smsCodeAuthenticationSecurityConfig)
+               .and()
+           .apply(lycSpringSocialConfigurer)
                .and()
            .rememberMe()
                .tokenRepository(persistentTokenRepository())
