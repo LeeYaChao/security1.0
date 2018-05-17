@@ -32,7 +32,8 @@ public class LycAuthorizeConfigProvider implements AuthorizeConfigProvider {
 				SecurityConstants.DEFAULT_SIGN_IN_PROCESSING_URL_MOBILE,
 				SecurityConstants.DEFAULT_SIGN_IN_PROCESSING_URL_OPENID,
 				SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
-				securityProperties.getBrowser().getSignInPage()
+				securityProperties.getBrowser().getSignInPage(),
+				"/signup"
 				).permitAll();
 		//securityProperties.getBrowser().getSession().getSessionInvalidUrl()
 		/*if (StringUtils.isNotBlank(securityProperties.getBrowser().getSignOutUrl())) {
