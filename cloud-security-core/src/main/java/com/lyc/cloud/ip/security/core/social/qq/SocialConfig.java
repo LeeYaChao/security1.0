@@ -4,6 +4,7 @@ import com.lyc.cloud.ip.security.core.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.social.config.annotation.EnableSocial;
 import org.springframework.social.config.annotation.SocialConfigurerAdapter;
@@ -18,6 +19,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableSocial
+@Order(1)
 public class SocialConfig extends SocialConfigurerAdapter{
 
     @Autowired
@@ -29,15 +31,12 @@ public class SocialConfig extends SocialConfigurerAdapter{
     @Autowired
     private ConnectionSignUp connectionSignUp;
 
-    @Override
+
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
 
         JdbcUsersConnectionRepository repository = new JdbcUsersConnectionRepository(dataSource,
                 connectionFactoryLocator, Encryptors.noOpText());
         repository.setTablePrefix("t_");
-       /* if(connectionSignUp != null) {
-            repository.setConnectionSignUp(connectionSignUp);
-        }*/
        if(connectionSignUp!=null){
            repository.setConnectionSignUp(connectionSignUp);
        }
@@ -48,7 +47,6 @@ public class SocialConfig extends SocialConfigurerAdapter{
     public SpringSocialConfigurer lycSpringSocialConfigurer(){
         String url = securityProperties.getSocial().getFilterProcessesUrl();
         LycSpringSocialConfigurer configurer = new LycSpringSocialConfigurer(url);
-        configurer.signupUrl("/login.html");
         return configurer;
     }
 
