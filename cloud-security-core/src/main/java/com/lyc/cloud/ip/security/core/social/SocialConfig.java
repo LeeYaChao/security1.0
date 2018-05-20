@@ -1,4 +1,4 @@
-package com.lyc.cloud.ip.security.core.social.qq;
+package com.lyc.cloud.ip.security.core.social;
 
 import com.lyc.cloud.ip.security.core.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;

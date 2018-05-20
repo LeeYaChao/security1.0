@@ -1,4 +1,4 @@
-package com.lyc.cloud.ip.security.core.social.qq;
+package com.lyc.cloud.ip.security.core.social;
 
 import org.springframework.social.security.SocialAuthenticationFilter;
 import org.springframework.social.security.SpringSocialConfigurer;

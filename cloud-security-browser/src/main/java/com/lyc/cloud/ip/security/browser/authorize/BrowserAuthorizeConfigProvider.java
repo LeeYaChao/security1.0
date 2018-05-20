@@ -32,7 +32,8 @@ public class BrowserAuthorizeConfigProvider implements AuthorizeConfigProvider {
 			"/**/*.jpg",
 			"/**/*.png",
 			"/**/*.gif",
-			"/**/*.woff").permitAll();
+			"/**/*.woff",
+			"/**/*.woff2").permitAll();
 		return false;
 	}
 
