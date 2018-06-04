@@ -1,0 +1,17 @@
+#×¢²áÖÐÐÄ
+eureka:
+  instance:
+    instance-id: ${spring.application.name}
+  client:
+     serviceUrl:
+        defaultZone: http://localhost:9000/eureka
+server:
+  port: 7000
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri:
