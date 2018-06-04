@@ -1,0 +1,22 @@
+spring:
+  session:
+    store-type: redis
+  application:
+    name: web-app
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+      profile: home
+
+
+#注册中心
+eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}
+  client:
+     serviceUrl:
+        defaultZone: http://localhost:9000/eureka
