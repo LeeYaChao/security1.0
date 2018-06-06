@@ -1,11 +1,9 @@
 package com.lyc.cloud.ip.controller.user;
 
-import com.lyc.cloud.ip.service.PublisherService;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.session.SessionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -14,10 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController {
 
     @Autowired
-    private AmqpTemplate template;
-
-    @Autowired
-    private PublisherService publisherService;
+    SessionRepository sessionRepository;
 
     private static Integer count = 0;
 
@@ -27,21 +22,12 @@ public class UserController {
         return "sss";
     }
 
-
-    @GetMapping("/send")
+    @GetMapping("/session")
     @ResponseBody
-    public String sendMesg(){
-        count++;
-        template.convertAndSend("exchange","topic.message",count.toString());
-        return count.toString();
+    public String getSession(){
+        redisOperationsSessionRepository.
+        return user;
     }
 
-    @GetMapping("/pub")
-    @ResponseBody
-    public String pubMsg(){
-        count++;
-        publisherService.pubMsg(count.toString());
-        return count.toString();
-    }
 
 }

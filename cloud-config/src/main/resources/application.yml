@@ -5,11 +5,17 @@ eureka:
   client:
      serviceUrl:
         defaultZone: http://localhost:9000/eureka
+
 server:
-  port: 7000
+  port: 8000
 spring:
   application:
     name: config-server
+  rabbitmq:
+    host: 192.168.43.243
+    port: 5672
+    username: guest
+    password: guest
   cloud:
     config:
       server:
@@ -17,4 +23,9 @@ spring:
           uri: https://github.com/LeeYaChao/config-server.git
           username: LeeYaChao
           password: Mm13592123150
-          basedir: D:\扎瓦\security1.0-master\security1.0-master\basedir
+          basedir: D:\basedir
+          force-pull: true
+management:
+  security:
+    enabled: false
+
