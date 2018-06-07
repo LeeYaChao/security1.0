@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-05-20 15:40:04
+Date: 2018-06-07 22:53:24
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -47,14 +47,17 @@ CREATE TABLE `t_user` (
   `birthday` datetime DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `updated` datetime DEFAULT NULL,
+  `image_url` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_user
 -- ----------------------------
-INSERT INTO `t_user` VALUES ('1', '王致和', '123456', '纸盒', '30', '15811525928', '0', '2015-06-09 00:00:00', '2015-06-10 00:00:00', '2015-06-11 00:00:00');
-INSERT INTO `t_user` VALUES ('3', 'EXCEPTION', '123456', null, null, null, null, null, null, null);
+INSERT INTO `t_user` VALUES ('1', '王致和', '123456', '纸盒', '30', '15811525928', '0', '2015-06-09 00:00:00', '2015-06-10 00:00:00', '2015-06-11 00:00:00', null);
+INSERT INTO `t_user` VALUES ('6', '亚超', '123456', null, null, null, null, null, null, null, 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKiaSGNaly6XzgQq72DuL05icvRJAWufXnCKTt0QspNU6cNiaaichhEHWuBWhOcR4HudQwfD6fDnTCJjQ/132');
+INSERT INTO `t_user` VALUES ('7', 'EXCEPTION', '123456', null, null, null, null, null, null, null, 'http://thirdqq.qlogo.cn/qqapp/100550231/35976670941B1DA35C9B7BC95A603C88/40');
+INSERT INTO `t_user` VALUES ('8', '晓诗', '123456', null, null, null, null, null, null, null, 'http://thirdqq.qlogo.cn/qqapp/100550231/06A5478592CF9CDBDE218B5CE4997064/40');
 
 -- ----------------------------
 -- Table structure for t_userconnection
@@ -79,9 +82,11 @@ CREATE TABLE `t_userconnection` (
 -- ----------------------------
 -- Records of t_userconnection
 -- ----------------------------
-INSERT INTO `t_userconnection` VALUES ('EXCEPTION', 'callback.do', '35976670941B1DA35C9B7BC95A603C88', '1', 'EXCEPTION', null, 'http://thirdqq.qlogo.cn/qqapp/100550231/35976670941B1DA35C9B7BC95A603C88/40', 'BA3934E5BB8A7B1FCA363B08B3CE7247', null, '035C173F9E676B77A3637F1BAD5214B4', '1534577913210');
+INSERT INTO `t_userconnection` VALUES ('EXCEPTION', 'callback.do', '35976670941B1DA35C9B7BC95A603C88', '1', 'EXCEPTION', null, 'http://thirdqq.qlogo.cn/qqapp/100550231/35976670941B1DA35C9B7BC95A603C88/40', 'BA3934E5BB8A7B1FCA363B08B3CE7247', null, '035C173F9E676B77A3637F1BAD5214B4', '1536157485222');
+INSERT INTO `t_userconnection` VALUES ('亚超', 'weixin', 'od4PTw3NGDtZwA2ptDjLBBVnGx6U', '1', '亚超', null, 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKiaSGNaly6XzgQq72DuL05icvRJAWufXnCKTt0QspNU6cNiaaichhEHWuBWhOcR4HudQwfD6fDnTCJjQ/132', '10_jMaziOfzDJy7zhvrMrJbMSudiUlc-J7rhxyux-CvlGa6nwPO-dZouM1AeB8Ri29uZNq_Z4xlcdDubdUbHbifvw', null, '10_-w8IJOUNeVgyqzud-eazvPTJJwREqR_L_LziO2xIH_ZkznMEn04FzxDGJRzpKyVoCgZNjpOS-x5KKSMAG_RsGg', '1528389330963');
+INSERT INTO `t_userconnection` VALUES ('晓诗', 'callback.do', '06A5478592CF9CDBDE218B5CE4997064', '1', '晓诗', null, 'http://thirdqq.qlogo.cn/qqapp/100550231/06A5478592CF9CDBDE218B5CE4997064/40', 'E30D7BDBD09A32A9D50DA51BA7ECC375', null, 'B5EC0917C641544B55793024B17C9BFD', '1536158294189');
 DROP TRIGGER IF EXISTS `inset_in_user`;
 DELIMITER ;;
-CREATE TRIGGER `inset_in_user` AFTER INSERT ON `t_userconnection` FOR EACH ROW insert into t_user(user_name,password) values(NEW.userId,'123456')
+CREATE TRIGGER `inset_in_user` AFTER INSERT ON `t_userconnection` FOR EACH ROW insert into t_user(user_name,password,image_url) values(NEW.userId,'123456',NEW.imageUrl)
 ;;
 DELIMITER ;
