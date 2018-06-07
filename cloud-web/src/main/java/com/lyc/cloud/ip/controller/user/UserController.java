@@ -1,10 +1,5 @@
 package com.lyc.cloud.ip.controller.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.user.SimpUser;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.stereotype.Controller;
@@ -14,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -29,8 +26,12 @@ public class UserController {
 
     @GetMapping("/session")
     @ResponseBody
-    public String getSession(HttpServletRequest request){
+    public Map<String,String> getSession(HttpServletRequest request){
+        Map<String,String> map =new HashMap<>();
         String userName = (String)sessionStrategy.getAttribute(new ServletWebRequest(request),"userName");
-        return userName;
+        String image = (String)sessionStrategy.getAttribute(new ServletWebRequest(request),"image");
+        map.put("userName",userName);
+        map.put("image",image);
+        return map;
     }
 }

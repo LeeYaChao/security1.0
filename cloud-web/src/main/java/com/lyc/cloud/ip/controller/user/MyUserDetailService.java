@@ -6,17 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.social.security.SocialUser;
 import org.springframework.social.security.SocialUserDetails;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.ServletWebRequest;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class MyUserDetailService implements UserDetailsService,SocialUserDetailsService{
@@ -25,9 +26,13 @@ public class MyUserDetailService implements UserDetailsService,SocialUserDetails
     @Autowired
     private UserInfoRepository userInfoRepository;
 
+
     /*@Autowired
     private PasswordEncoder passwordEncoder;*/
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
+
+    @Autowired
+    private HttpServletRequest request;
 
 
     @Override
@@ -42,6 +47,7 @@ public class MyUserDetailService implements UserDetailsService,SocialUserDetails
     @Override
     public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
         logger.info("设计登录用户Id:" + userId);
+        sessionStrategy.setAttribute(new ServletWebRequest(request),"userName",userId);
         return buildUser(userId);
     }
 
@@ -52,6 +58,9 @@ public class MyUserDetailService implements UserDetailsService,SocialUserDetails
             u = userInfoRepository.findByMobile(userId);
         }
         String password = u.getPassword();
+        sessionStrategy.setAttribute(new ServletWebRequest(request),"image",u.getImageUrl());
         return new SocialUser(userId,password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
+
 }
+

@@ -2378,7 +2378,9 @@
 				});
 
 
-				var name = getUserNameBySession();
+				var dataJson = getUserBySession();
+				var name = JSON.parse(dataJson).userName;
+				var imageUrl = JSON.parse(dataJson).image;
 				var stompClient = null;
 				var socket  = new SockJS('/ng-websocket');
 				stompClient = Stomp.over(socket);
@@ -2386,6 +2388,7 @@
 					console.log('Connected: ' + frame);
 					stompClient.subscribe('/user/queue/reply', function(greeting) {
 						if(greeting.body!=null){
+						    var data = JSON.parse(greeting.body);
                             var date = new Date();//时间戳为10位需*1000，时间戳为13位的话不需乘1000
                             Y = date.getFullYear();
                             M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
@@ -2393,7 +2396,7 @@
                             var nowStr = Y +'年'+M+'月'+ D+'日';
 						    var message = '<div class="itemdiv dialogdiv">\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="user">\n' +
-                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<img alt="Alexa\'s Avatar" src="ace/assets/avatars/avatar1.png" />\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<img alt="Alexa\'s Avatar" src="'+data.imageUrl+'" />\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
                                 '\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="body">\n' +
@@ -2403,9 +2406,9 @@
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
                                 '\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="name">\n' +
-                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<a href="#">Alexa</a>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<a href="#">'+data.name+'</a>\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
-                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="text">'+greeting.body+'</div>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="text">'+data.sendMessageBody+'</div>\n' +
                                 '\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="tools">\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<a href="#" class="btn btn-minier btn-info">\n' +
@@ -2414,30 +2417,41 @@
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>';
-						    $(".dialogs").append(message);
+						    $(".dialogs .scroll-content").append(message);
+                            $('.dialogs').ace_scroll({
+                                size: 300
+                            });
 						}
 					});
 				});
 
 
 				$("#sendbutn").click(function(){
-				    var mesg = $("#mesginpt").val();
+                    var mesbody = $("#mesginpt").val();
+                    var msg = JSON.stringify({
+                        'name': name,
+                        'toUser' :'',
+                        'sendMessageBody':mesbody,
+						'imageUrl': imageUrl
+                    });
+
                     stompClient.send("/app/message", {
-                    }, mesg);
+                    }, msg);
+                    $("#mesginpt").val("");
 				});
 
-				function getUserNameBySession(){
-                    var userName;
+				function getUserBySession(){
+                    var jsondata;
                     $.ajax({
                         url:'/user/session',
                         async:false,
                         success:function (res) {
                             if(res){
-                                userName = res;
+                                jsondata = res;
                             }
                         }
                     });
-                    return userName;
+                    return JSON.stringify(jsondata);
 				}
 			})
 		</script>

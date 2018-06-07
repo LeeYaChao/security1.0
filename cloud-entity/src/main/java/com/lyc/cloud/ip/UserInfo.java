@@ -40,4 +40,6 @@ public class UserInfo{
     private Date created;
 
     private Date updated;
+
+    private String imageUrl;
 }

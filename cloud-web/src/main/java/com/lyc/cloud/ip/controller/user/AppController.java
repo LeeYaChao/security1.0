@@ -1,6 +1,8 @@
 package com.lyc.cloud.ip.controller.user;
 
 import com.lyc.cloud.ip.HelloMessage;
+import com.lyc.cloud.ip.UserInfo;
+import com.lyc.cloud.ip.security.core.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -27,8 +29,9 @@ public class AppController {
     @Autowired
     private SimpUserRegistry userRegistry;
 
+
     @MessageMapping("/message")
-    public void greeting(String message) throws Exception {
+    public void greeting(HelloMessage message) throws Exception {
         for (SimpUser user : userRegistry.getUsers()) {
             messagingTemplate.convertAndSendToUser(user.getName(), "/queue/reply", message);
         }

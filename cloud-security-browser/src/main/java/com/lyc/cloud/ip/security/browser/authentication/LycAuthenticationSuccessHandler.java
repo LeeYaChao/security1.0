@@ -1,9 +1,11 @@
 package com.lyc.cloud.ip.security.browser.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lyc.cloud.ip.UserInfo;
 import com.lyc.cloud.ip.security.core.properties.LoginType;
 import com.lyc.cloud.ip.security.core.properties.SecurityConstants;
 import com.lyc.cloud.ip.security.core.properties.SecurityProperties;
+import com.lyc.cloud.ip.security.core.repository.UserInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,10 @@ public class LycAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -49,6 +55,8 @@ public class LycAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
         SocialUser user = (SocialUser) authentication.getPrincipal();
         sessionStrategy.setAttribute(new ServletWebRequest(request),"userName",user.getUsername());
+        UserInfo userInfo = userInfoRepository.findByUserName(user.getUsername());
+        sessionStrategy.setAttribute(new ServletWebRequest(request),"image",userInfo.getImageUrl());
         redirectStrategy.sendRedirect(request,response, SecurityConstants.DEFAULT_INDEX_HTML);
 
     }

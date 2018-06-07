@@ -8,7 +8,7 @@ spring:
       discovery:
         enabled: true
         service-id: config-server
-      profile: work
+      profile: home
     bus:
       trace:
         enabled: true

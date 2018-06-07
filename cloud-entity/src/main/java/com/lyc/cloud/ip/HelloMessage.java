@@ -8,6 +8,8 @@ public class HelloMessage {
 
 	private String sendMessageBody;
 
+	private String imageUrl;
+
 	public String getName() {
 		return name;
 	}
@@ -30,5 +32,13 @@ public class HelloMessage {
 
 	public String getSendMessageBody() {
 		return sendMessageBody;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 }
