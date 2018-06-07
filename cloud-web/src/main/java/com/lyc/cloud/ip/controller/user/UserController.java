@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    SessionRepository sessionRepository;
 
     private static Integer count = 0;
 
@@ -25,8 +23,8 @@ public class UserController {
     @GetMapping("/session")
     @ResponseBody
     public String getSession(){
-        redisOperationsSessionRepository.
-        return user;
+
+        return null;
     }
 
 
