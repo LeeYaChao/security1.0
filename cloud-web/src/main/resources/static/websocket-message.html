@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Hello WebSocket</title>
+    <script src="js/sockjs-0.3.4.js"></script>
+    <script src="js/stomp.js"></script>
+    <script src="js/jquery1x.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+
+        function setConnected(connected) {
+            document.getElementById('connect').disabled                 = connected;
+            document.getElementById('disconnect').disabled              = !connected;
+            document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
+            $('#systemDate').text('');
+            $('#helloBroadcast').text('');
+            $('#helloToUser').text('');
+        }
+
+        //建立连接
+        function connect() {
+            var name = $('#name').val();
+            alert(name);
+            var socket  = new SockJS('http://www.pinzhi365.com/ng-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({user:name}, function (frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+
+                stompClient.subscribe('/user/queue/system-test', function(greeting) {
+                    showSystemTest(greeting.body);
+                    console.log(greeting.body);
+                });
+
+            });
+        }
+
+        function disconnect() {
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function sendName() {
+            var name = document.getElementById('name').value;
+            var toUser = document.getElementById('toUser').value;
+            var sendMessage = document.getElementById('sendMessage').value;
+
+            var msg = JSON.stringify({
+                'name': name,
+                'toUser' :toUser,
+                'sendMessageBody':sendMessage
+            });
+            $('#sendMessageBody').text(msg);
+
+            $.get("/app/hello",{"msg":msg},function (res) {
+                alert(res);
+            })
+
+            /*stompClient.send("/app/hello", {
+            }, msg);*/
+        }
+
+        function showSystemDate(message) {
+            $('#showSystemDate').text(message)
+        }
+
+        function showSystemTest(message) {
+            $('#showSystemTest').text(message)
+        }
+
+        function showGreeting(message) {
+            $('#showGreeting').text(message)
+        }
+
+        $(document).ready(function(){
+
+        });
+    </script>
+</head>
+<body onload="disconnect()">
+<div>
+    <div>
+        <label>输入您的姓名?</label><input type="text" id="name"/><br/>
+        <button id="connect" onclick="connect();">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+
+        <br>
+
+        <br>
+        <label>发送给?</label><input type="text" id="toUser"/>
+        <button id="sendName" onclick="sendName();">Send</button><br/>
+
+        <br/>发送服务器消息:<br/>
+        <textarea id="sendMessage" style="width: 400px;height: 100px;"></textarea>
+
+        <br/>发送服务器消息体:<br/>
+        <textarea id="sendMessageBody" style="width: 400px;height: 100px;"></textarea>
+    </div>
+
+    <div id="conversationDiv">
+
+
+        <br><br/>广播系统时间:<br/>
+        <textarea id="showSystemDate" style="width: 400px;height: 100px;"></textarea>
+        <br><br/>特定用户时间:<br/>
+        <textarea id="showSystemTest" style="width: 400px;height: 100px;"></textarea>
+        <br><br/>showGreeting:<br/>
+        <textarea id="showGreeting" style="width: 400px;height: 100px;"></textarea>
+    </div>
+</div>
+</body>
+</html>

@@ -13,6 +13,12 @@ import java.util.Date;
 @Table(name = "T_USER")
 public class UserInfo{
 
+    public UserInfo(){}
+
+    public UserInfo(String userName){
+        this.userName = userName;
+    }
+
     @Id
     @GeneratedValue
     private Integer id;
