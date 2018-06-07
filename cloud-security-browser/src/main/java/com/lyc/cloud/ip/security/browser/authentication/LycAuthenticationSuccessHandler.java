@@ -11,7 +11,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.session.Session;
+import org.springframework.session.web.http.HttpSessionStrategy;
+import org.springframework.social.connect.web.HttpSessionSessionStrategy;
+import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,11 +38,14 @@ public class LycAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
+    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         logger.info("登陆成功");
+       sessionStrategy.setAttribute((ServletWebRequest) request,"user",authentication);
         redirectStrategy.sendRedirect(request,response, SecurityConstants.DEFAULT_INDEX_HTML);
 
     }
