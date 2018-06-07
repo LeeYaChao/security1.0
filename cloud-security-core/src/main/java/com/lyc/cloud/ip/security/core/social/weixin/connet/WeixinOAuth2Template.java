@@ -63,7 +63,8 @@ public class WeixinOAuth2Template extends OAuth2Template {
 		
 		return getAccessToken(accessTokenRequestUrl);
 	}
-	
+
+	@Override
 	public AccessGrant refreshAccess(String refreshToken, MultiValueMap<String, String> additionalParameters) {
 		
 		StringBuilder refreshTokenUrl = new StringBuilder(REFRESH_TOKEN_URL);

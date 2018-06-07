@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.connect.web.HttpSessionSessionStrategy;
+import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.social.security.SocialUser;
 import org.springframework.social.security.SocialUserDetails;
 import org.springframework.social.security.SocialUserDetailsService;
@@ -25,6 +27,7 @@ public class MyUserDetailService implements UserDetailsService,SocialUserDetails
 
     /*@Autowired
     private PasswordEncoder passwordEncoder;*/
+    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
 
     @Override

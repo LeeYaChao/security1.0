@@ -31,7 +31,7 @@ public class SocialConfig extends SocialConfigurerAdapter{
     @Autowired
     private ConnectionSignUp connectionSignUp;
 
-
+    @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
 
         JdbcUsersConnectionRepository repository = new JdbcUsersConnectionRepository(dataSource,

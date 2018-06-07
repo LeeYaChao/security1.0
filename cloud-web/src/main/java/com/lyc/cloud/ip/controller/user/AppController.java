@@ -27,10 +27,10 @@ public class AppController {
     @Autowired
     private SimpUserRegistry userRegistry;
 
-    @MessageMapping("/hello")
-    public void systemTest(HelloMessage helloMessage) {
+    @MessageMapping("/message")
+    public void greeting(String message) throws Exception {
         for (SimpUser user : userRegistry.getUsers()) {
-            messagingTemplate.convertAndSendToUser(user.getName(), "/queue/reply", helloMessage.getSendMessageBody()+"uuu");
+            messagingTemplate.convertAndSendToUser(user.getName(), "/queue/reply", message);
         }
     }
 }

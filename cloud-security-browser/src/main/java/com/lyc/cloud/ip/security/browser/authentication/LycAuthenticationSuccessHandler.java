@@ -15,6 +15,7 @@ import org.springframework.session.Session;
 import org.springframework.session.web.http.HttpSessionStrategy;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
+import org.springframework.social.security.SocialUser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -45,7 +46,9 @@ public class LycAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         logger.info("登陆成功");
-       sessionStrategy.setAttribute((ServletWebRequest) request,"user",authentication);
+
+        SocialUser user = (SocialUser) authentication.getPrincipal();
+        sessionStrategy.setAttribute(new ServletWebRequest(request),"userName",user.getUsername());
         redirectStrategy.sendRedirect(request,response, SecurityConstants.DEFAULT_INDEX_HTML);
 
     }

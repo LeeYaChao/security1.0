@@ -24,7 +24,8 @@
 		<link rel="stylesheet" href="ace/assets/css/ace-rtl.css" />
 
 		<script src="ace/assets/js/ace-extra.js"></script>
-
+		<script src="js/stompjs/sockjs-0.3.4.js"></script>
+		<script src="js/stompjs/stomp.js"></script>
 	</head>
 
 	<body class="no-skin">
@@ -2042,135 +2043,16 @@
 												<div class="widget-main no-padding">
 													<!-- #section:pages/dashboard.conversations -->
 													<div class="dialogs">
-														<div class="itemdiv dialogdiv">
-															<div class="user">
-																<img alt="Alexa's Avatar" src="ace/assets/avatars/avatar1.png" />
-															</div>
 
-															<div class="body">
-																<div class="time">
-																	<i class="ace-icon fa fa-clock-o"></i>
-																	<span class="green">4 sec</span>
-																</div>
-
-																<div class="name">
-																	<a href="#">Alexa</a>
-																</div>
-																<div class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis.</div>
-
-																<div class="tools">
-																	<a href="#" class="btn btn-minier btn-info">
-																		<i class="icon-only ace-icon fa fa-share"></i>
-																	</a>
-																</div>
-															</div>
-														</div>
-
-														<div class="itemdiv dialogdiv">
-															<div class="user">
-																<img alt="John's Avatar" src="ace/assets/avatars/avatar.png" />
-															</div>
-
-															<div class="body">
-																<div class="time">
-																	<i class="ace-icon fa fa-clock-o"></i>
-																	<span class="blue">38 sec</span>
-																</div>
-
-																<div class="name">
-																	<a href="#">John</a>
-																</div>
-																<div class="text">Raw denim you probably haven&#39;t heard of them jean shorts Austin.</div>
-
-																<div class="tools">
-																	<a href="#" class="btn btn-minier btn-info">
-																		<i class="icon-only ace-icon fa fa-share"></i>
-																	</a>
-																</div>
-															</div>
-														</div>
-
-														<div class="itemdiv dialogdiv">
-															<div class="user">
-																<img alt="Bob's Avatar" src="ace/assets/avatars/user.jpg" />
-															</div>
-
-															<div class="body">
-																<div class="time">
-																	<i class="ace-icon fa fa-clock-o"></i>
-																	<span class="orange">2 min</span>
-																</div>
-
-																<div class="name">
-																	<a href="#">Bob</a>
-																	<span class="label label-info arrowed arrowed-in-right">admin</span>
-																</div>
-																<div class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis.</div>
-
-																<div class="tools">
-																	<a href="#" class="btn btn-minier btn-info">
-																		<i class="icon-only ace-icon fa fa-share"></i>
-																	</a>
-																</div>
-															</div>
-														</div>
-
-														<div class="itemdiv dialogdiv">
-															<div class="user">
-																<img alt="Jim's Avatar" src="ace/assets/avatars/avatar4.png" />
-															</div>
-
-															<div class="body">
-																<div class="time">
-																	<i class="ace-icon fa fa-clock-o"></i>
-																	<span class="grey">3 min</span>
-																</div>
-
-																<div class="name">
-																	<a href="#">Jim</a>
-																</div>
-																<div class="text">Raw denim you probably haven&#39;t heard of them jean shorts Austin.</div>
-
-																<div class="tools">
-																	<a href="#" class="btn btn-minier btn-info">
-																		<i class="icon-only ace-icon fa fa-share"></i>
-																	</a>
-																</div>
-															</div>
-														</div>
-
-														<div class="itemdiv dialogdiv">
-															<div class="user">
-																<img alt="Alexa's Avatar" src="ace/assets/avatars/avatar1.png" />
-															</div>
-
-															<div class="body">
-																<div class="time">
-																	<i class="ace-icon fa fa-clock-o"></i>
-																	<span class="green">4 min</span>
-																</div>
-
-																<div class="name">
-																	<a href="#">Alexa</a>
-																</div>
-																<div class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-
-																<div class="tools">
-																	<a href="#" class="btn btn-minier btn-info">
-																		<i class="icon-only ace-icon fa fa-share"></i>
-																	</a>
-																</div>
-															</div>
-														</div>
 													</div>
 
 													<!-- /section:pages/dashboard.conversations -->
 													<form>
 														<div class="form-actions">
 															<div class="input-group">
-																<input placeholder="Type your message here ace." type="text" class="form-control" name="message" />
+																<input placeholder="Type your message here ace." type="text" class="form-control" name="message" id="mesginpt"/>
 																<span class="input-group-btn">
-																	<button class="btn btn-sm btn-info no-radius" type="button">
+																	<button class="btn btn-sm btn-info no-radius" type="button" id="sendbutn">
 																		<i class="ace-icon fa fa-share"></i>
 																		Send
 																	</button>
@@ -2494,7 +2376,69 @@
 						$(this).addClass('dropup');
 					else $(this).removeClass('dropup');
 				});
-			
+
+
+				var name = getUserNameBySession();
+				var stompClient = null;
+				var socket  = new SockJS('/ng-websocket');
+				stompClient = Stomp.over(socket);
+				stompClient.connect({user:name}, function (frame) {
+					console.log('Connected: ' + frame);
+					stompClient.subscribe('/user/queue/reply', function(greeting) {
+						if(greeting.body!=null){
+                            var date = new Date();//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+                            Y = date.getFullYear();
+                            M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+                            D = (date.getDate() + 1 < 10 ? '0' + (date.getDate()) : date.getDate()) + '';
+                            var nowStr = Y +'年'+M+'月'+ D+'日';
+						    var message = '<div class="itemdiv dialogdiv">\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="user">\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<img alt="Alexa\'s Avatar" src="ace/assets/avatars/avatar1.png" />\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
+                                '\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="body">\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="time">\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<i class="ace-icon fa fa-clock-o"></i>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class="green">'+nowStr+'</span>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
+                                '\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="name">\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<a href="#">Alexa</a>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="text">'+greeting.body+'</div>\n' +
+                                '\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="tools">\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<a href="#" class="btn btn-minier btn-info">\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<i class="icon-only ace-icon fa fa-share"></i>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</a>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>';
+						    $(".dialogs").append(message);
+						}
+					});
+				});
+
+
+				$("#sendbutn").click(function(){
+				    var mesg = $("#mesginpt").val();
+                    stompClient.send("/app/message", {
+                    }, mesg);
+				});
+
+				function getUserNameBySession(){
+                    var userName;
+                    $.ajax({
+                        url:'/user/session',
+                        async:false,
+                        success:function (res) {
+                            if(res){
+                                userName = res;
+                            }
+                        }
+                    });
+                    return userName;
+				}
 			})
 		</script>
 
